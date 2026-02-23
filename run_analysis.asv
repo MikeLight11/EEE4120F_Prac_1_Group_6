@@ -95,9 +95,8 @@ function run_analysis()
     % Define edge detection kernels (Sobel kernel)
     Gx = [-1 0 1; -2 0 2; -1 0 1]; % Sobel kernel for x-direction
     Gy = [1 2 1; 0 0 0; -1 -2 -1]; % Sobel kernel for y-direction
-    
-    results = struct();
-    
+ 
+
     % TODO3:
     % For each image, perform the following:
     for k = 1:length(images)
@@ -107,17 +106,12 @@ function run_analysis()
         time_manual = toc;
         %   b. Measure execution time of inbuilt_conv2
         tic;
-        inbuilt_output = inbuilt_conv2(images{k},Gx,Gy,'full');
+        in_built_output = inbuilt_conv2(images{k},Gx,Gy,'full');
         time_builtin = toc;
         %   c. Compute speedup ratio
-        speed_up_ratio = time_manual / time_builtin;
+        speed_up_ratio = 
         %   d. Verify output correctness (compare results)
-        
         %   e. Store results (image name, time_manual, time_builtin, speedup)
-        results(k).image_name   = images{k};
-        results(k).time_manual  = time_manual;
-        results(k).time_builtin = time_builtin;
-        results(k).speedup      = speedup;
         %   f. Plot and compare results
         %   g. Visualise the edge detection results(Optional)
     end
