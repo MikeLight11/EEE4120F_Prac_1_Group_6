@@ -76,7 +76,16 @@ function run_analysis()
         results(k).speedup      = speed_up_ratio;
         %   f. Plot and compare results
 
-        %TODO
+        % Not entirely sure what they want.
+        % VERIFICATION:
+
+        % Test to confirm verification process
+        %manual_output = manual_output+1;
+        % Verify by comparing the two outputs
+        diff_map        = abs(manual_output - inbuilt_output);
+        max_err         = max(diff_map(:));
+        results(k).max_error  = max_err;
+
         %   g. Visualise the edge detection results(Optional)
         figure;
         subplot(1,3,1), imshow(images{k}), title('Original');
