@@ -35,15 +35,36 @@ function run_analysis()
     
     % TODO3:
     % For each image, perform the following:
+
+    Number_Runs = 5;
+
     for k = 1:length(images)
         %   a. Measure execution time of my_conv2
-        tic;
-        manual_output = my_conv2(images{k},Gx,Gy,'full');
-        time_manual = toc;
+        time_manual = Inf;  % Defualt max - overriden in first iteration
+        for r=1:Number_Runs
+            tic;
+            manual_output = my_conv2(images{k},Gx,Gy,'full');
+            t = toc;
+            if t < time_manual 
+                % Run is quicker than prev fastest
+                time_manual = t;
+            end
+        end
+
+
         %   b. Measure execution time of inbuilt_conv2
-        tic;
-        inbuilt_output = inbuilt_conv2(images{k},Gx,Gy,'full');
-        time_builtin = toc;
+
+        time_builtin = Inf;  % Defualt max - overriden in first iteration
+        for r=1:Number_Runs
+            tic;
+            inbuilt_output = inbuilt_conv2(images{k},Gx,Gy,'full');
+            t = toc;
+            if t < time_builtin 
+                % Run is quicker than prev fastest
+                time_builtin = t;
+            end
+        end
+   
         %   c. Compute speedup ratio
         speed_up_ratio = time_manual / time_builtin;
         %   d. Verify output correctness (compare results)
@@ -54,6 +75,8 @@ function run_analysis()
         results(k).time_builtin = time_builtin;
         results(k).speedup      = speed_up_ratio;
         %   f. Plot and compare results
+
+        %TODO
         %   g. Visualise the edge detection results(Optional)
         figure;
         subplot(1,3,1), imshow(images{k}), title('Original');
@@ -101,25 +124,26 @@ function output = my_conv2(image, Gx, Gy, output_mode)
     
     % Padding based on mode
     switch lower(output_mode)
-        case 'full'
+        case 'full'  % Return every possible overlap
             padRow = kernel_Row - 1; 
             padCol = kernel_Col - 1;
-        case 'same'
+        case 'same'  % Output same size as input
             padRow = floor(kernel_Row/2);
             padCol = floor(kernel_Col/2);
-        case 'valid'
+        case 'valid' % Only where kernal fully fits inside image
             padRow = 0;
             padCol = 0;
     end
     
-    % Pad the image
+    % Pad the image if kernal overlaps outside image boundaries, reqs
+    % element-by-element mult
     paddedImage = padarray(grey_image, [padRow padCol], 0);
     
     % Calculate output dimensions based on padding
     out_rows = size(paddedImage, 1) - kernel_Row + 1;
     out_cols = size(paddedImage, 2) - kernel_Col + 1;
     
-    % Initialize gradients
+    % Initialize gradients (zero grid)
     gradient_x = zeros(out_rows, out_cols);
     gradient_y = zeros(out_rows, out_cols);
     
