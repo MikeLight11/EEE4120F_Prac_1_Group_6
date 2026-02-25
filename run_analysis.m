@@ -88,24 +88,25 @@ function run_analysis()
 
         %   g. Visualise the edge detection results(Optional)
         figure;
-        subplot(1,3,1), imshow(images{k}), title('Original');
-        subplot(1,3,2), imshow(manual_output, []), title('Manual Conv');
-        subplot(1,3,3), imshow(inbuilt_output, []), title('Built-in Conv');
+       % subplot(1,3,1), imshow(images{k}), title('Original');
+       % subplot(1,3,2), imshow(manual_output, []), title('Manual Conv');
+       % subplot(1,3,3), imshow(inbuilt_output, []), title('Built-in Conv');
     end
 
     % Print Header
     fprintf('\n%-20s | %-12s | %-12s | %-10s | %-10s\n', ...
-        'Image Name', 'Manual (s)', 'Built-in (s)', 'Speedup');
+        'Image Name', 'Manual (s)', 'Built-in (s)', 'Speedup', 'Max Error');
     fprintf('%s\n', repmat('-', 1, 75));
     
     % Loop through results struct to print each row
     for k = 1:length(results)
         % Corrected printf for rows
         fprintf('%-20s | %-12.4f | %-12.4f | %-10.2f | %-10.2e\n', ...
-            results(k).image_name, ...
+            results(k).image_, ...
             results(k).time_manual, ...
             results(k).time_builtin, ...
-            results(k).speedup);
+            results(k).speedup, ...
+            results(k).max_error);
     end
         
     
