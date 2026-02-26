@@ -17,6 +17,7 @@
 
 function run_analysis()
     % TODO1:
+
     % Load all the sample images from the 'sample_images' folder
     images{1} = imread('sample_images/image_128x128.png');
     images{2} = imread('sample_images/image_256x256.png');
@@ -35,7 +36,6 @@ function run_analysis()
     
     % TODO3:
     % For each image, perform the following:
-
     Number_Runs = 5;
 
     for k = 1:length(images)
@@ -53,7 +53,6 @@ function run_analysis()
 
 
         %   b. Measure execution time of inbuilt_conv2
-
         time_builtin = Inf;  % Defualt max - overriden in first iteration
         for r=1:Number_Runs
             tic;
@@ -68,29 +67,21 @@ function run_analysis()
         %   c. Compute speedup ratio
         speed_up_ratio = time_manual / time_builtin;
         %   d. Verify output correctness (compare results)
-        
+        diff_map        = abs(manual_output - inbuilt_output);
+        max_err         = max(diff_map(:));
+        results(k).max_error  = max_err;
+
         %   e. Store results (image name, time_manual, time_builtin, speedup)
         results(k).image_name = image_names{k};
         results(k).time_manual  = time_manual;
         results(k).time_builtin = time_builtin;
         results(k).speedup      = speed_up_ratio;
-        %   f. Plot and compare results
-
-        % Not entirely sure what they want.
-        % VERIFICATION:
-
-        % Test to confirm verification process
-        %manual_output = manual_output+1;
-        % Verify by comparing the two outputs
-        diff_map        = abs(manual_output - inbuilt_output);
-        max_err         = max(diff_map(:));
-        results(k).max_error  = max_err;
 
         %   g. Visualise the edge detection results(Optional)
         figure;
-       % subplot(1,3,1), imshow(images{k}), title('Original');
-       % subplot(1,3,2), imshow(manual_output, []), title('Manual Conv');
-       % subplot(1,3,3), imshow(inbuilt_output, []), title('Built-in Conv');
+        subplot(1,3,1), imshow(images{k}), title('Original');
+        subplot(1,3,2), imshow(manual_output, []), title('Manual Conv');
+        subplot(1,3,3), imshow(inbuilt_output, []), title('Built-in Conv');
     end
 
     % Print Header
@@ -100,9 +91,8 @@ function run_analysis()
     
     % Loop through results struct to print each row
     for k = 1:length(results)
-        % Corrected printf for rows
         fprintf('%-20s | %-12.4f | %-12.4f | %-10.2f | %-10.2e\n', ...
-            results(k).image_, ...
+            results(k).image_name, ...
             results(k).time_manual, ...
             results(k).time_builtin, ...
             results(k).speedup, ...
@@ -129,7 +119,6 @@ function output = my_conv2(image, Gx, Gy, output_mode)
     Gy = rot90(Gy, 2);
     
     % Get dimensions
-    [rows, cols] = size(grey_image);
     [kernel_Row, kernel_Col] = size(Gx);
     
     % Padding based on mode
